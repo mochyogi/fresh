@@ -65,7 +65,24 @@ class BlogPostController extends Controller
     {
         $model = new BlogPost();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
+            $model->foto = $model->foto = UploadedFile::getInstance($model, 'foto');
+            try{
+                if($model->save()){
+                $model->foto->saveAs('uploads/blog'.$model->foto->baseName. '-'.$model->foto->extension);
+                Yii::$app->getSession()->setFlash('success', 'Data saved');
+                return $this->render('create', ['model'=> $model]);
+                }
+            }
+            catch (\Exception $e){
+                Yii::$app->getSession()->setFlash('error', 'Upload Failed');
+                return $this->render('create', ['model', $model]);
+            }
+            $model->view = 0;
+            $model->date_published = date('Y-m-d');
+            $model->comment_id = 0;
+            $model->image='not set';
+            $model->save();
             return $this->redirect(['view', 'id' => $model->id_blog]);
         } else {
             return $this->render('create', [
@@ -73,6 +90,7 @@ class BlogPostController extends Controller
             ]);
         }
     }
+
 
     /**
      * Updates an existing BlogPost model.
