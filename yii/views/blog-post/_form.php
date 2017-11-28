@@ -40,8 +40,7 @@ foreach ($obj_author as $key) {
 
     <?= $form->field($model, 'foto')->fileInput() ?>
 
-<?php
-echo $form->field($model, 'category')->widget(Select2::classname(), [
+<?= $form->field($model, 'category')->widget(Select2::classname(), [
     'data' => $arr_category,
     'language' => 'de',
     'options' => ['placeholder' => 'Select a state ...'],
